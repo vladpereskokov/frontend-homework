@@ -33,33 +33,33 @@ const createVariant = function *({desc:description, name, number}, names, readme
 
 	yield e(`git checkout master`);
 	yield e(`git reset --hard`);
-	yield e(`git checkout -b variant-${number}`);
+	yield e(`git checkout variant-${number}`);
 
 	yield fs.writeFile('index.html', index
+		.replace(`<title>Homework №</title>`, `<title>Homework №${number}</title>`)
 		.replace('<script src="tests/name.js"></script>', `<script src="tests/${name}.js"></script>`)
 	);
-	yield fs.writeFile('README.md', readme
-		.replace('{{{greet}}}', greet(number))
-		.replace('{{{task}}}', description)
-	);
-
-	const filesToRemove = names
-		.filter(n => n !== name)
-		.map(n => `tests/${n}.js`)
-		.join(' ');
-
-	console.log(filesToRemove);
+	// yield fs.writeFile('README.md', readme
+	// 	.replace('{{{greet}}}', greet(number))
+	// 	.replace('{{{task}}}', description)
+	// );
+	//
+	// const filesToRemove = names
+	// 	.filter(n => n !== name)
+	// 	.map(n => `tests/${n}.js`)
+	// 	.join(' ');
 
 
-	yield e('rm ' + filesToRemove);
-	yield e('rm descs.txt');
-	yield e('rm help.js');
-	yield e('rm -rf node_modules/');
+	// yield e('rm ' + filesToRemove);
+	// yield e('rm descs.txt');
+	// yield e('rm help.js');
+	// yield e('rm -rf node_modules/');
+	yield e('rm tests/merge.js');
 
 	yield e(`git add .`);
 	yield e(`git add --all`);
-	yield e(`git commit -am "Init variant ${number}"`);
-	yield e(`git push -u origin variant-${number}:variant-${number}`);
+	yield e(`git commit -am "Fix title in index.html"`);
+	yield e(`git push origin variant-${number}`);
 };
 
 co(function *() {
